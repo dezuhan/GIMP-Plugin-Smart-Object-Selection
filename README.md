@@ -2,7 +2,25 @@
 
 Draw a rough rectangle or lasso around any object — the AI refines it into a pixel-precise selection. Like Photoshop's Object Selection Tool, powered by [rembg](https://github.com/danielgatis/rembg). Cross-platform: Linux, Windows, macOS.
 
-**Dependency:** requires the [Remove Background](https://github.com/dezuhan/GIMP-Plugin-Remove-Background) plugin — they share the same AI engine (`~/.gimp-plugin-shared-venv`).
+## Dependencies
+
+This plugin shares the AI engine with [Remove Background](https://github.com/dezuhan/GIMP-Plugin-Remove-Background).
+Install **remove-background first** — it sets up `~/.gimp-plugin-shared-venv/venv` with all required packages.
+
+| Layer | Dependency | Required | Notes |
+|-------|-----------|:--------:|-------|
+| Plugin | Remove Background | Required | Shared venv at `~/.gimp-plugin-shared-venv` |
+| pip | `rembg` | Required | Via shared venv |
+| pip | `onnxruntime-*` | Required | Via shared venv (auto-detected per GPU) |
+| pip | `pillow` | Required | Via shared venv |
+| pip | `numpy` | Required | Via shared venv |
+| Plugin files | `bg_remove_worker.py` | Required | Identical to remove-background's worker |
+| Plugin files | `run_worker.sh` | Required | Identical wrapper script |
+
+This plugin adds **no extra dependencies** beyond what Remove Background already installs.
+It is a thin orchestration layer: crop to selection bounds → rembg → alpha-to-selection.
+
+For full dependency and hardware/provider details, see the [Remove Background README](https://github.com/dezuhan/GIMP-Plugin-Remove-Background).
 
 ## Install
 
