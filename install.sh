@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Smart Object Selection — Quick Install
+# Requires the shared engine from Remove Background plugin.
+# Run install.sh from remove-background first.
 # Works on Linux, macOS, Windows (Git Bash).
 set -e
 
@@ -27,7 +29,7 @@ echo "============================================"
 if [ ! -f "$SHARED_VENV" ]; then
     echo ""
     echo "[!] Shared engine not found at ~/.gimp-plugin-shared-venv/venv"
-    echo "    Run install.sh from GIMP-Plugin-Remove-Background first."
+    echo "    Run install.sh from remove-background first."
     exit 1
 fi
 echo "[✓] Shared engine found"

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Wrapper so onnxruntime can find the pip-installed nvidia CUDA/cuDNN
-# runtime libraries, which don't sit on the normal system LD_LIBRARY_PATH.
+# Wrapper that sets up native library paths before launching the Python
+# worker. ONNX Runtime ships GPU provider DLLs/SOs in its package tree
+# (not on the system path), so we add them here.
+#
 # The GIMP plugin calls this instead of calling venv/bin/python3 directly.
 set -e
 
@@ -13,10 +15,22 @@ fi
 VENV="$HOME/.gimp-plugin-shared-venv/venv"
 WORKER="$SCRIPT_DIR/bg_remove_worker.py"
 
-# Linux: add NVIDIA CUDA libs to LD_LIBRARY_PATH
-if [ "$(uname -s)" = "Linux" ]; then
-    NVIDIA_LIBS="$(find "$VENV" -path '*/nvidia/*/lib' -type d 2>/dev/null | tr '\n' ':')"
-    export LD_LIBRARY_PATH="${NVIDIA_LIBS}${LD_LIBRARY_PATH}"
-fi
+case "$(uname -s)" in
+    Linux)
+        NVIDIA_LIBS="$(find "$VENV" -path '*/nvidia/*/lib' -type d 2>/dev/null | tr '\n' ':')"
+        export LD_LIBRARY_PATH="${NVIDIA_LIBS}${LD_LIBRARY_PATH}"
+        ;;
+    CYGWIN*|MINGW*|MSYS*)
+        # DirectML DLLs
+        DML_PATH="$VENV/Lib/site-packages/onnxruntime/capi"
+        [ -d "$DML_PATH" ] && export PATH="$DML_PATH:$PATH"
+        ;;
+    Darwin*)
+        # CoreML may need .dylib path on macOS
+        COREML_PATH="$VENV/lib/python3*/site-packages/onnxruntime/capi"
+        COREML_DIR="$(echo $COREML_PATH 2>/dev/null | head -1)"
+        [ -d "$COREML_DIR" ] && export DYLD_LIBRARY_PATH="$COREML_DIR:${DYLD_LIBRARY_PATH}"
+        ;;
+esac
 
 exec "$VENV/bin/python3" "$WORKER" "$@"

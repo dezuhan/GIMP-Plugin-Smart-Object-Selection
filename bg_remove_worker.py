@@ -32,6 +32,14 @@ ACCURACY_PROFILES = {
     },
 }
 
+PROVIDER_PRIORITY = [
+    "DmlExecutionProvider",        # Windows: AMD, Intel, NVIDIA via DirectML
+    "CUDAExecutionProvider",       # Linux/Windows: NVIDIA CUDA
+    "ROCMExecutionProvider",       # Linux: AMD ROCm
+    "CoreMLExecutionProvider",     # macOS: Apple Silicon
+    "CPUExecutionProvider",        # Universal fallback
+]
+
 
 def main():
     if len(sys.argv) < 3:
@@ -45,13 +53,10 @@ def main():
     params = ACCURACY_PROFILES.get(accuracy, ACCURACY_PROFILES["medium"])
 
     available = ort.get_available_providers()
-    if "CUDAExecutionProvider" in available:
-        providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
-        print(f"Using GPU (CUDA) — accuracy: {accuracy}", file=sys.stderr)
-    else:
-        providers = ["CPUExecutionProvider"]
-        print("WARNING: CUDAExecutionProvider not available, falling back to CPU.",
-              file=sys.stderr)
+    providers = [p for p in PROVIDER_PRIORITY if p in available]
+
+    provider_name = providers[0] if providers else "CPUExecutionProvider"
+    print(f"Using {provider_name} — accuracy: {accuracy}", file=sys.stderr)
 
     session = new_session("isnet-general-use", providers=providers)
 
