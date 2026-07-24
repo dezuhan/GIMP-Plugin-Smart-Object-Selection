@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Runs INSIDE the dedicated venv (~/.gimp-bg-remover/venv).
+Runs INSIDE the dedicated venv (~/.gimp-plugin-shared-venv/venv).
 Called by the GIMP plugin as a subprocess so GIMP's own python
 never needs onnxruntime/rembg installed into it.
 

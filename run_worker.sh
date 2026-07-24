@@ -5,7 +5,7 @@
 set -e
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-VENV="$HOME/.gimp-bg-remover/venv"
+VENV="$HOME/.gimp-plugin-shared-venv/venv"
 WORKER="$SCRIPT_DIR/bg_remove_worker.py"
 
 NVIDIA_LIBS="$(find "$VENV" -path '*/nvidia/*/lib' -type d 2>/dev/null | tr '\n' ':')"
