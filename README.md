@@ -6,7 +6,15 @@ Draw a rough rectangle or lasso around any object — the AI refines it into a p
 
 ## Install
 
-**Windows users:** install [Git Bash](https://git-scm.com/downloads/win) first to run `.sh` scripts.
+### Linux / macOS
+
+```bash
+chmod +x install.sh && ./install.sh
+```
+
+### Windows
+
+Install [Git Bash](https://git-scm.com/downloads/win), right-click the plugin folder → **Git Bash Here**, then run:
 
 ```bash
 chmod +x install.sh && ./install.sh
