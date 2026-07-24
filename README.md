@@ -2,7 +2,7 @@
 
 Draw a rough rectangle or lasso around any object — the AI refines it into a pixel-precise selection. Like Photoshop's Object Selection Tool, powered by [rembg](https://github.com/danielgatis/rembg). Cross-platform: Linux, Windows, macOS.
 
-Requires the [Remove Background](../remove-background) plugin installed first (they share the same AI engine).
+Requires the **Remove Background** plugin to be installed first (shared AI engine).
 
 ## Install
 
