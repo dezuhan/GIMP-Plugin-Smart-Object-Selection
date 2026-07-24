@@ -89,6 +89,7 @@ class SmartObjectSelect(Gimp.PlugIn):
             return procedure.new_return_values(
                 Gimp.PDBStatusType.CALLING_ERROR, GLib.Error())
 
+        drawable = drawables[0]
         ok, non_empty, x1, y1, x2, y2 = Gimp.Selection.bounds(image)
 
         if x2 - x1 < 4 or y2 - y1 < 4:
@@ -104,9 +105,11 @@ class SmartObjectSelect(Gimp.PlugIn):
             crop_path = os.path.join(tmp_dir, "crop.png")
             out_path = os.path.join(tmp_dir, "output.png")
 
-            crop_img = image.duplicate()
-            crop_img.crop(x2 - x1, y2 - y1, x1, y1)
-
+            # Export only the active layer's selection region (not whole project)
+            crop_img = Gimp.Image.new(x2 - x1, y2 - y1, Gimp.ImageBaseType.RGB)
+            crop_layer = Gimp.Layer.new_from_drawable(drawable, crop_img)
+            crop_layer.set_offsets(-x1, -y1)
+            crop_img.insert_layer(crop_layer, None, 0)
             in_file = Gio.File.new_for_path(crop_path)
             Gimp.file_save(Gimp.RunMode.NONINTERACTIVE, crop_img, in_file, None)
             crop_img.delete()
