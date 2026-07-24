@@ -2,7 +2,7 @@
 
 Draw a rough rectangle or lasso around any object — the AI refines it into a pixel-precise selection. Like Photoshop's Object Selection Tool, powered by [rembg](https://github.com/danielgatis/rembg). Cross-platform: Linux, Windows, macOS.
 
-Requires the **Remove Background** plugin to be installed first (shared AI engine).
+**Dependency:** requires the [Remove Background](https://github.com/dezuhan/GIMP-Plugin-Remove-Background) plugin — they share the same AI engine (`~/.gimp-plugin-shared-venv`).
 
 ## Install
 
@@ -10,7 +10,7 @@ Requires the **Remove Background** plugin to be installed first (shared AI engin
 chmod +x install.sh && ./install.sh
 ```
 
-This copies the plugin files to GIMP's plug-ins folder. The shared engine must already exist at `~/.gimp-bg-remover/venv`.
+This copies the plugin files to GIMP's plug-ins folder. The shared engine must already exist at `~/.gimp-plugin-shared-venv/venv`.
 
 ## Usage
 
@@ -26,6 +26,11 @@ This copies the plugin files to GIMP's plug-ins folder. The shared engine must a
 ```
 Rough selection → Crop → rembg → Alpha → Selection
 ```
+
+## Related Plugins
+
+- [Remove Background](https://github.com/dezuhan/GIMP-Plugin-Remove-Background) — AI background removal (required)
+- [AI Upscaler](https://github.com/dezuhan/GIMP-Plugin-AI-Upscaler) — Real-ESRGAN upscaling
 
 ## License
 
