@@ -6,6 +6,8 @@ Draw a rough rectangle or lasso around any object — the AI refines it into a p
 
 ## Install
 
+**Windows users:** install [Git Bash](https://git-scm.com/downloads/win) first to run `.sh` scripts.
+
 ```bash
 chmod +x install.sh && ./install.sh
 ```
