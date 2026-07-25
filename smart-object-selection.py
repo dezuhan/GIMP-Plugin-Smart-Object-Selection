@@ -12,19 +12,22 @@ from gi.repository import Gimp, GimpUi, GLib, Gio, GObject
 
 import os
 import subprocess
+import sys
 import tempfile
 import traceback
 import time
 
 PLUGIN_DIR = os.path.dirname(os.path.abspath(__file__))
 IS_FLATPAK = os.path.exists("/.flatpak-info")
+IS_WINDOWS = sys.platform == "win32"
 
 
 def _build_command(script, args):
     if IS_FLATPAK:
         return ["flatpak-spawn", "--host", script] + args
-    else:
-        return [script] + args
+    if IS_WINDOWS:
+        return ["bash", script] + args
+    return [script] + args
 
 
 def _run_worker_with_progress(title, args):
