@@ -11,6 +11,7 @@ gi.require_version('GimpUi', '3.0')
 from gi.repository import Gimp, GimpUi, GLib, Gio, GObject
 
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -21,12 +22,36 @@ PLUGIN_DIR = os.path.dirname(os.path.abspath(__file__))
 IS_FLATPAK = os.path.exists("/.flatpak-info")
 IS_WINDOWS = sys.platform == "win32"
 
+_BASH_EXE = None
+
+
+def _find_bash():
+    """Locate bash.exe on Windows (Git Bash / MSYS2)."""
+    global _BASH_EXE
+    if _BASH_EXE is not None:
+        return _BASH_EXE
+    bash = shutil.which("bash")
+    if bash:
+        _BASH_EXE = bash
+        return _BASH_EXE
+    for candidate in [
+        r"C:\Program Files\Git\bin\bash.exe",
+        r"C:\Program Files (x86)\Git\bin\bash.exe",
+        r"C:\Git\bin\bash.exe",
+        r"C:\msys64\usr\bin\bash.exe",
+    ]:
+        if os.path.exists(candidate):
+            _BASH_EXE = candidate
+            return _BASH_EXE
+    _BASH_EXE = "bash"
+    return _BASH_EXE
+
 
 def _build_command(script, args):
     if IS_FLATPAK:
         return ["flatpak-spawn", "--host", script] + args
     if IS_WINDOWS:
-        return ["bash", script] + args
+        return [_find_bash(), script] + args
     return [script] + args
 
 
