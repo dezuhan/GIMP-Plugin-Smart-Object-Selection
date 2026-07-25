@@ -8,13 +8,16 @@ set -e
 case "$(uname -s)" in
     Linux*)
         GIMP_PLUGINS="$HOME/.config/GIMP/3.2/plug-ins"
+        VENV_PYTHON_REL="bin/python3"
         ;;
     Darwin*)
         GIMP_PLUGINS="$HOME/Library/Application Support/GIMP/3.2/plug-ins"
+        VENV_PYTHON_REL="bin/python3"
         ;;
     CYGWIN*|MINGW*|MSYS*)
         GIMP_PLUGINS="$APPDATA/GIMP/3.2/plug-ins"
         GIMP_PLUGINS="$(echo "$GIMP_PLUGINS" | sed 's|\\|/|g' | sed 's|C:|/c|')"
+        VENV_PYTHON_REL="Scripts/python.exe"
         ;;
 esac
 
@@ -24,7 +27,7 @@ else
     PLUGIN_DIR="$(cd "$(dirname "$0")" && pwd)"
 fi
 PLUGINS_PATH="$GIMP_PLUGINS/smart-object-selection"
-SHARED_VENV="$HOME/.gimp-plugin-shared-venv/venv/bin/python3"
+SHARED_VENV="$HOME/.gimp-plugin-shared-venv/venv/$VENV_PYTHON_REL"
 
 echo "============================================"
 echo " Smart Object Selection — Install"
