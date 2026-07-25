@@ -13,8 +13,11 @@ else
     SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 fi
 
-# HOME may not be set when bash.exe is called from CreateProcess
-[ -z "$HOME" ] && export HOME="$USERPROFILE"
+# MSYS2 sets HOME=/home/<user>, but our venv lives in Windows %USERPROFILE%
+# Override HOME so the venv path resolves to the real user directory.
+if [ -n "$USERPROFILE" ]; then
+    export HOME="$(cd "$USERPROFILE" 2>/dev/null && pwd)"
+fi
 
 VENV="$HOME/.gimp-plugin-shared-venv/venv"
 WORKER="$SCRIPT_DIR/bg_remove_worker.py"
