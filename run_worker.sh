@@ -12,6 +12,10 @@ if readlink -f "$0" &>/dev/null; then
 else
     SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 fi
+
+# HOME may not be set when bash.exe is called from CreateProcess
+[ -z "$HOME" ] && export HOME="$USERPROFILE"
+
 VENV="$HOME/.gimp-plugin-shared-venv/venv"
 WORKER="$SCRIPT_DIR/bg_remove_worker.py"
 
@@ -22,7 +26,7 @@ case "$(uname -s)" in
         export LD_LIBRARY_PATH="${NVIDIA_LIBS}${LD_LIBRARY_PATH}"
         ;;
     CYGWIN*|MINGW*|MSYS*)
-        VENV_PYTHON="$VENV/Scripts/python"
+        VENV_PYTHON="$VENV/Scripts/python.exe"
         # DirectML DLLs
         DML_PATH="$VENV/Lib/site-packages/onnxruntime/capi"
         [ -d "$DML_PATH" ] && export PATH="$DML_PATH:$PATH"
