@@ -18,7 +18,11 @@ case "$(uname -s)" in
         ;;
 esac
 
-PLUGIN_DIR="$(dirname "$(readlink -f "$0")")"
+if readlink -f "$0" &>/dev/null; then
+    PLUGIN_DIR="$(dirname "$(readlink -f "$0")")"
+else
+    PLUGIN_DIR="$(cd "$(dirname "$0")" && pwd)"
+fi
 PLUGINS_PATH="$GIMP_PLUGINS/smart-object-selection"
 SHARED_VENV="$HOME/.gimp-plugin-shared-venv/venv/bin/python3"
 
@@ -29,9 +33,30 @@ echo "============================================"
 if [ ! -f "$SHARED_VENV" ]; then
     echo ""
     echo "[!] Shared engine not found at ~/.gimp-plugin-shared-venv/venv"
-    echo "    Run install.sh from remove-background first."
-    exit 1
+
+    # Try to find remove-background install.sh in sibling directories
+    REMBG_INSTALL=""
+    for candidate in \
+        "$PLUGIN_DIR/../remove-background/install.sh" \
+        "$PLUGIN_DIR/../GIMP-Plugin-Remove-Background/install.sh" \
+        "$PLUGIN_DIR/../../remove-background/install.sh" \
+        "$PLUGIN_DIR/../../GIMP-Plugin-Remove-Background/install.sh"; do
+        if [ -f "$candidate" ]; then
+            REMBG_INSTALL="$candidate"
+            break
+        fi
+    done
+
+    if [ -n "$REMBG_INSTALL" ]; then
+        echo "[→] Found remove-background installer. Running it first..."
+        bash "$REMBG_INSTALL"
+    else
+        echo "    Run install.sh from https://github.com/dezuhan/GIMP-Plugin-Remove-Background first."
+        echo "    Or clone it alongside this repo and re-run."
+        exit 1
+    fi
 fi
+
 echo "[✓] Shared engine found"
 
 mkdir -p "$PLUGINS_PATH"
