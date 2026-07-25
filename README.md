@@ -24,21 +24,58 @@ For full dependency and hardware/provider details, see the [Remove Background RE
 
 ## Install
 
-### Linux / macOS
+**Prerequisite:** [Remove Background](https://github.com/dezuhan/GIMP-Plugin-Remove-Background) must be installed first — it provides the shared AI engine at `~/.gimp-plugin-shared-venv`.
 
+### Automatic (recommended)
+
+**Linux / macOS:**
 ```bash
 chmod +x install.sh && ./install.sh
 ```
 
-### Windows
-
-Install [Git Bash](https://git-scm.com/downloads/win), right-click the plugin folder → **Git Bash Here**, then run:
-
+**Windows:** Install [Git Bash](https://git-scm.com/downloads/win), right-click the plugin folder → **Git Bash Here**, then:
 ```bash
 chmod +x install.sh && ./install.sh
 ```
 
-This copies the plugin files to GIMP's plug-ins folder. The shared engine must already exist at `~/.gimp-plugin-shared-venv/venv`.
+If the shared engine is missing, `install.sh` will automatically find and run the Remove Background installer from a sibling directory.
+
+---
+
+### Manual Install
+
+#### Linux / macOS
+
+```bash
+# 1. Ensure Remove Background is already installed
+ls ~/.gimp-plugin-shared-venv/venv/bin/python3  # should exist
+
+# 2. Copy plugin files
+PLUGINS=~/.config/GIMP/3.2/plug-ins/smart-object-selection
+mkdir -p "$PLUGINS"
+cp smart-object-selection.py run_worker.sh bg_remove_worker.py "$PLUGINS/"
+chmod +x "$PLUGINS/smart-object-selection.py"
+chmod +x "$PLUGINS/run_worker.sh"
+
+# 3. Restart GIMP → Select → Smart Object Selection
+```
+
+#### Windows
+
+Run all commands in **Git Bash**:
+
+```bash
+# 1. Ensure Remove Background is already installed
+ls ~/.gimp-plugin-shared-venv/venv/Scripts/python.exe  # should exist
+
+# 2. Copy plugin files
+PLUGINS="$APPDATA/GIMP/3.2/plug-ins/smart-object-selection"
+PLUGINS="$(echo "$PLUGINS" | sed 's|\\\\|/|g' | sed 's|C:|/c|')"
+mkdir -p "$PLUGINS"
+cp smart-object-selection.py run_worker.sh bg_remove_worker.py "$PLUGINS/"
+
+# 3. Restart GIMP → Select → Smart Object Selection
+```
 
 ## Usage
 
